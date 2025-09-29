@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>Лабораторная работа №1 - WEB-программирование</title>
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../css/brands.min.css" rel="stylesheet">
+        <link href="../css/solid.min.css" rel="stylesheet">
+        <link href="../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="..">WEB-программирование</a>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="1"><a href="#no1" class="nav-link">Лабораторная работа №1</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="1"><a href="#4" class="nav-link">Задание 4</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#_1" class="nav-link">Цель</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#_2" class="nav-link">Выполнение</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#_5" class="nav-link">Результат</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#_6" class="nav-link">Вывод</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="no1"><a href="../lab1/">Лабораторная работа №1</a></h1>
+<h1 id="4"><strong>Задание 4</strong></h1>
+<h2 id="_1">Цель</h2>
+<p>Реализовать двухпользовательский или многопользовательский чат. Для максимального количества баллов реализуйте многопользовательский чат.</p>
+<p><strong>Требования</strong></p>
+<ul>
+<li>Обязательно использовать библиотеку socket.</li>
+<li>Для многопользовательского чата необходимо использовать библиотеку threading.</li>
+</ul>
+<p><strong>Реализация</strong></p>
+<ul>
+<li>Протокол TCP: 100% баллов.</li>
+<li>Протокол UDP: 80% баллов.</li>
+<li>Для UDP используйте threading для получения сообщений на клиенте.</li>
+<li>Для TCP запустите клиентские подключения и обработку сообщений от всех пользователей в потоках. Не  забудьте сохранять пользователей, чтобы отправлять им сообщения.</li>
+</ul>
+<h2 id="_2">Выполнение</h2>
+<p>Был реализован полноценный многопользовательский чат: сервер принимает подключения нескольких клиентов и пересылает сообщения всем участникам.</p>
+<p>На сервере для каждого подключения было выделено отдельная функция, запуск которой происходит в отдельном потоке. Список подключённых пользователей хранится в простом List, а для безопасной работы с ним при параллельной обработке сообщений использована блокировка threading.Lock(). Основной цикл сервера занимается приёмом новых подключений и добавлением их в чат, а функция в потоках отвечает за рассылку сообщений всем участникам.</p>
+<p>На клиентской стороне тоже используется threading, чтобы одновременно принимать сообщения от сервера. В основном цикле клиент может вводить текст и отправлять его нажатием Enter.</p>
+<h3 id="_3"><strong>Клиент</strong></h3>
+<pre><code class="language-python">import socket      # Модуль для работы с сетевыми сокетами
+import threading   # Модуль для работы с потоками
+
+def process_recieve(sock_client):  
+    # Функция для постоянного получения сообщений от сервера
+    while True:  
+        response = sock_client.recv(1024).decode()  
+        # Получаем до 1024 байт и декодируем в строку
+        print(response)  
+        # Выводим сообщение на экран
+
+sock_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  
+# Создаем TCP-сокет для клиента
+
+sock_client.connect(('localhost', 8080))  
+# Подключаемся к серверу по адресу localhost:8080
+
+name = input(&quot;Name: &quot;)  
+# Просим пользователя ввести своё имя
+
+thr = threading.Thread(target=process_recieve, args=(sock_client,))  
+# Создаем поток для функции получения сообщений (чтобы принимать и печатать одновременно)
+thr.start()  
+# Запускаем поток
+
+print(&quot;You join to chat&quot;)  
+# Сообщение о подключении к чату
+
+while True:  
+    text = input()  
+    # Ждем ввод текста от пользователя
+    sock_client.sendall((name + &quot;: &quot; + text).encode())  
+    # Отправляем введённое сообщение на сервер в виде &quot;имя: сообщение&quot;
+</code></pre>
+<h3 id="_4"><strong>Сервер</strong></h3>
+<pre><code class="language-python">import socket      # Модуль для работы с сетевыми сокетами
+import threading   # Модуль для работы с потоками (чтобы обрабатывать клиентов параллельно)
+
+users = []          # Список подключенных клиентов
+lock = threading.Lock()  
+# Блокировка для безопасного доступа к общему списку users из разных потоков
+
+def process_user(client_connection):  
+    # Функция для обработки сообщений одного клиента
+    global users  
+    while True:  
+        msg = client_connection.recv(1024)  
+        # Получаем сообщение от клиента (до 1024 байт)
+        with lock:  
+            # Закрываем доступ к списку users на время отправки сообщений
+            for user in users:  
+                if user != client_connection:  
+                    user.sendall(msg)  
+                    # Отправляем сообщение всем клиентам, кроме отправителя
+
+# Создаем TCP-сокет для сервера
+sock_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+sock_server.bind(('localhost', 8080))  
+# Привязываем сокет к адресу localhost и порту 8080
+
+sock_server.listen(5)  
+# Начинаем слушать соединения, с очередью до 5 подключений
+print(&quot;Chat started...&quot;)  
+
+while True:  # Основной цикл для принятия новых клиентов
+    client_connection, client_address = sock_server.accept()  
+    # Принимаем подключение клиента
+    print(f'{client_address} Connected')  
+
+    with lock:  
+        users.append(client_connection)  
+        # Добавляем нового клиента в список пользователей безопасно
+
+    thr = threading.Thread(target=process_user, args=(client_connection,))  
+    thr.start()  
+    # Создаем новый поток для обработки сообщений этого клиента
+</code></pre>
+<h2 id="_5">Результат</h2>
+<p>Результат работы со стороны сервера:</p>
+<p><img alt="" src="../assets/Screenshot_9.png" /></p>
+<p>Результаты работы от 3-ех различных клиентов:</p>
+<p><img alt="" src="../assets/Screenshot_10.png" />
+<img alt="" src="../assets/Screenshot_11.png" />
+<img alt="" src="../assets/Screenshot_12.png" /></p>
+<h2 id="_6">Вывод</h2>
+<p>Реализован многопользовательский TCP‑чат с потоковой обработкой и безопасной рассылкой сообщений:</p>
+<ul>
+<li>Сервер поддерживает любое количество подключений, каждое обрабатывается в отдельном потоке.</li>
+<li>Клиенты могут одновременно отправлять и получать сообщения через отдельный поток‑приёмник.</li>
+<li>Список подключений защищён Lock, при этом рассылка сообщений выполняется без блокировок.</li>
+</ul></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../js/base.js"></script>
+        <script src="../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

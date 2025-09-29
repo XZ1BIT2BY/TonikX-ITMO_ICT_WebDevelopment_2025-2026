@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>Лабораторная работа №1 - WEB-программирование</title>
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../css/brands.min.css" rel="stylesheet">
+        <link href="../css/solid.min.css" rel="stylesheet">
+        <link href="../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="..">WEB-программирование</a>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="1"><a href="#no1" class="nav-link">Лабораторная работа №1</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="1"><a href="#5" class="nav-link">Задание 5</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#_1" class="nav-link">Цель</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#_2" class="nav-link">Выполнение</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#_4" class="nav-link">Результат</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#_5" class="nav-link">Вывод</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="no1"><a href="../lab1/">Лабораторная работа №1</a></h1>
+<h1 id="5"><strong>Задание 5</strong></h1>
+<h2 id="_1">Цель</h2>
+<p>Написать простой веб-сервер для обработки GET и POST HTTP-запросов с помощью библиотеки socket в Python.</p>
+<p><strong>Требования</strong></p>
+<ul>
+<li>Сервер должен:<ol>
+<li>Принять и записать информацию о дисциплине и оценке по дисциплине.</li>
+<li>Отдать информацию обо всех оценках по дисциплинам в виде HTML-страницы.</li>
+</ol>
+</li>
+</ul>
+<h2 id="_2">Выполнение</h2>
+<p>Cоздан минимальный веб‑сервер на Python, который обрабатывает HTTP‑запросы.
+Сервер слушает указанный порт и при подключении клиента определяет метод запроса:</p>
+<ul>
+<li>
+<p>Для GET формируется HTML‑страница с текущими оценками из словаря journal и отправляется клиенту с кодом 200 OK.</p>
+</li>
+<li>
+<p>Для POST сервер разбирает параметры формы, добавляет новую оценку в словарь и возвращает обновлённую HTML‑страницу.</p>
+</li>
+<li>
+<p>Для всех остальных методов сервер возвращает код 405 Method Not Allowed.</p>
+</li>
+</ul>
+<p>HTML-страница создаётся функцией build_html(), которая включает список оценок и форму для добавления новых. Для разбора POST‑данных написана функция parse_post_data().</p>
+<h3 id="_3"><strong>Сервер</strong></h3>
+<pre><code class="language-python">import socket  # импортируем модуль для работы с сетевыми соединениями
+
+HOST = &quot;localhost&quot;  # адрес сервера
+PORT = 8080         # порт сервера
+
+# создаём TCP-сокет
+sock_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+# словарь для хранения оценок: ключ - предмет, значение - строка оценок
+journal = {}
+
+# функция для генерации HTML-страницы со списком оценок и формой
+def build_html():
+    html = &quot;&lt;html&gt;&lt;head&gt;&lt;title&gt;Marks&lt;/title&gt;&lt;/head&gt;&lt;body&gt;&quot;  # начало HTML
+    html += &quot;&lt;h1&gt;All Marks&lt;/h1&gt;&lt;ul&gt;&quot;  # заголовок и начало списка
+    if journal:  # если есть записи в журнале
+        for subj, mark in journal.items():  # перебираем все предметы и оценки
+            html += f&quot;{subj}: {mark}&lt;hr&gt;&quot;  # добавляем предмет и его оценки в список
+    else:
+        html += &quot;No marks yet&lt;hr&gt;&quot;  # если оценок ещё нет
+    html += &quot;&lt;/ul&gt;&quot;  # конец списка
+    # форма для добавления новой оценки
+    html += &quot;&quot;&quot;
+    &lt;h2&gt;Add marks&lt;/h2&gt;
+    &lt;form method=&quot;POST&quot;&gt;
+      Lesson: &lt;input type=&quot;text&quot; name=&quot;subject&quot; required&gt;&lt;br&gt;
+      &lt;br&gt;
+      Mark: &lt;input type=&quot;number&quot; name=&quot;grade&quot; min=&quot;1&quot; max=&quot;10&quot; required&gt;&lt;br&gt;
+      &lt;br&gt;
+      &lt;input type=&quot;submit&quot; value=&quot;Add&quot;&gt;
+    &lt;/form&gt;
+    &quot;&quot;&quot;
+    html += &quot;&lt;/body&gt;&lt;/html&gt;&quot;  # конец HTML
+    return html  # возвращаем готовую страницу
+
+# функция для разбора параметров POST-запроса
+def parse_post_data(data: str):
+    # разделяем заголовки и тело запроса по двойному \r\n
+    body = data.split(&quot;\r\n\r\n&quot;, 1)[1]
+    params = {}  # словарь для параметров
+    for pair in body.split(&quot;&amp;&quot;):  # тело приходит в формате key=value&amp;key=value
+        if &quot;=&quot; in pair:
+            k, v = pair.split(&quot;=&quot;, 1)  # разделяем ключ и значение
+            params[k] = v.replace(&quot;+&quot;, &quot; &quot;)  # заменяем + на пробел
+    return params  # возвращаем словарь параметров
+
+# запускаем сервер
+with sock_server as s:
+    s.bind((HOST, PORT))  # привязываем сокет к адресу и порту
+    s.listen(5)           # начинаем слушать соединения (до 5 в очереди)
+    print(f&quot;Server started http://{HOST}:{PORT}&quot;)  # выводим сообщение о старте
+
+    while True:  # бесконечный цикл для обработки подключений
+        conn, addr = s.accept()  # принимаем подключение от клиента
+        with conn:  # открываем контекст для соединения
+            request = conn.recv(1024).decode(&quot;utf-8&quot;)  # читаем запрос (макс 1024 байта) и декодируем
+            if not request:  # если запрос пустой, пропускаем
+                continue
+
+            first_line = request.split(&quot;\n&quot;)[0]  # первая строка запроса, например &quot;GET / HTTP/1.1&quot;
+            method = first_line.split(&quot; &quot;)[0]    # извлекаем метод запроса (GET, POST и т.д.)
+
+            # ---------------------- GET ----------------------
+            if method == &quot;GET&quot;:
+                response_body = build_html()  # формируем HTML-страницу
+                response = &quot;HTTP/1.1 200 OK\r\n&quot;  # статус ответа
+                response += &quot;Content-Type: text/html; charset=utf-8\r\n&quot;  # заголовок типа контента
+                response += f&quot;Content-Length: {len(response_body.encode('utf-8'))}\r\n&quot;  # длина тела ответа
+                response += &quot;Connection: close\r\n\r\n&quot;  # закрытие соединения
+                response += response_body  # добавляем HTML в тело ответа
+                conn.sendall(response.encode(&quot;utf-8&quot;))  # отправляем ответ клиенту
+
+            # ---------------------- POST ----------------------
+            elif method == &quot;POST&quot;:
+                params = parse_post_data(request)  # разбираем тело POST-запроса
+                subj = params.get(&quot;subject&quot;, &quot;None&quot;)  # извлекаем предмет
+                grade = params.get(&quot;grade&quot;, &quot;?&quot;)      # извлекаем оценку
+
+                # проверяем, что оценка состоит из цифр
+                if grade.isdigit():
+                    if subj in journal:  # если предмет уже есть в журнале
+                        journal[subj] += f&quot; {grade}&quot;  # добавляем новую оценку через пробел
+                    else:
+                        journal[subj] = grade  # если предмет новый, создаём запись
+
+                response_body = build_html()  # формируем HTML-страницу с обновлёнными данными
+                response = &quot;HTTP/1.1 200 OK\r\n&quot;  # статус ответа
+                response += &quot;Content-Type: text/html; charset=utf-8\r\n&quot;  # заголовок типа контента
+                response += f&quot;Content-Length: {len(response_body.encode('utf-8'))}\r\n&quot;  # длина тела
+                response += &quot;Connection: close\r\n\r\n&quot;  # закрытие соединения
+                response += response_body  # тело ответа
+                conn.sendall(response.encode(&quot;utf-8&quot;))  # отправляем клиенту
+
+            # ---------------------- Остальные методы ----------------------
+            else:
+                response = &quot;HTTP/1.1 405 Method Not Allowed\r\n\r\nMethod not supported&quot;  # метод не поддерживается
+                conn.sendall(response.encode(&quot;utf-8&quot;))  # отправляем ошибку клиенту
+</code></pre>
+<h2 id="_4">Результат</h2>
+<p>Результат работы:</p>
+<p><img alt="" src="../assets/Screenshot_13.png" />
+<img alt="" src="../assets/Screenshot_14.png" /></p>
+<h2 id="_5">Вывод</h2>
+<p>Был реализован простой веб‑сервер на Python с поддержкой методов GET и POST, который позволяет отображать HTML‑страницу с оценками и добавлять новые записи через форму. Сервер корректно обрабатывает запросы, возвращает соответствующие коды состояния и защищён от неподдерживаемых методов. С помощью тестового скрипта можно проверять работу POST‑запросов и убедиться, что данные в журнале обновляются правильно.</p></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../js/base.js"></script>
+        <script src="../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

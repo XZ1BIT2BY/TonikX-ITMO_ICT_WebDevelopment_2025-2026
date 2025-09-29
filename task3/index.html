@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>Лабораторная работа №1 - WEB-программирование</title>
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../css/brands.min.css" rel="stylesheet">
+        <link href="../css/solid.min.css" rel="stylesheet">
+        <link href="../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="..">WEB-программирование</a>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="1"><a href="#no1" class="nav-link">Лабораторная работа №1</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="1"><a href="#3" class="nav-link">Задание 3</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#_1" class="nav-link">Цель</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#_2" class="nav-link">Выполнение</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#_4" class="nav-link">Результат</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#_5" class="nav-link">Вывод</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="no1"><a href="../lab1/">Лабораторная работа №1</a></h1>
+<h1 id="3"><strong>Задание 3</strong></h1>
+<h2 id="_1">Цель</h2>
+<p>Реализовать серверную часть приложения. Клиент подключается к серверу, и в ответ получает HTTP-сообщение, содержащее HTML-страницу, которая сервер подгружает из файла index.html.</p>
+<p><strong>Требования</strong></p>
+<ul>
+<li>Обязательно использовать библиотеку socket.</li>
+</ul>
+<h2 id="_2">Выполнение</h2>
+<p>В этой задаче нужно было создать простой веб-сервер с использованием сокетов.
+Я выбрал протокол TCP, так как он используется в HTTP. На сервере сначала создаётся сокет через socket(), затем привязывается к адресу и порту (bind()) и переводится в режим ожидания подключений (listen()).</p>
+<p>При подключении клиента (accept()) сервер получает HTTP-запрос, открывает файл index.html из той же папки, где находится скрипт, читает его содержимое и формирует ответ: заголовки HTTP/1.1 200 OK, Content-Type, Content-Length, после чего отправляется сам HTML-код через sendall().</p>
+<p>Так как задача касалась только серверной части, в качестве клиента использовался браузер. При вводе localhost:8080 браузер отправляет GET-запрос и отображает HTML-страницу.</p>
+<p>В итоге реализован минимальный веб-сервер, способный отдавать HTML-страницу.</p>
+<h3 id="_3"><strong>Сервер</strong></h3>
+<pre><code class="language-python">import socket  # Импортируем модуль для работы с сетевыми сокетами
+import os      # Импортируем модуль для работы с файловой системой
+
+# Создаем TCP-сокет (SOCK_STREAM) и привязываем его к адресу, чтобы слушать подключения
+sock_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sock_server.bind(('localhost', 8080))  # Привязываем сокет к localhost:8080
+sock_server.listen(1)  # Переводим сокет в режим прослушивания, с очередью 1 подключение
+print(&quot;Server on...&quot;)  # Выводим сообщение, что сервер запущен
+
+# Определяем путь к файлу index.html, который будем отдавать клиенту
+base_dir = os.path.dirname(os.path.abspath(__file__))  # Директория текущего скрипта
+file_path = os.path.join(base_dir, &quot;index.html&quot;)       # Полный путь к index.html
+
+while True:  # Бесконечный цикл для обработки подключений
+    # Принимаем подключение от клиента
+    client_connection, client_address = sock_server.accept()
+    print(f&quot;Client {client_address}&quot;)  # Выводим адрес подключившегося клиента
+
+    # Открываем HTML-файл и читаем его содержимое
+    with open(file_path, &quot;r&quot;, encoding=&quot;utf-8&quot;) as file:
+        html_content = file.read()  # Читаем весь файл в строку
+
+    # Формируем HTTP-ответ
+    http_response = (
+        &quot;HTTP/1.1 200 OK\r\n&quot;  # Статус ответа 200 OK
+        &quot;Content-Type: text/html; charset=UTF-8\r\n&quot;  # Тип содержимого: HTML с UTF-8
+        f&quot;Content-Length: {len(html_content.encode('utf-8'))}\r\n&quot;  # Длина содержимого в байтах
+        &quot;Connection: close\r\n&quot;  # Закрываем соединение после ответа
+        &quot;\r\n&quot;  # Пустая строка, разделяющая заголовки и тело
+        + html_content  # Тело ответа: HTML-код
+    )
+
+    # Отправляем клиенту HTTP-ответ полностью и закрываем соединение
+    client_connection.sendall(http_response.encode(&quot;utf-8&quot;))
+    client_connection.close()
+    print(&quot;Server off...&quot;)  # Сообщение о закрытии соединения
+</code></pre>
+<h2 id="_4">Результат</h2>
+<p>Результат работы со стороны сервера:</p>
+<p><img alt="" src="../assets/Screenshot_8.png" /></p>
+<p>Результаты работы со стороны браузера:</p>
+<p><img alt="" src="../assets/Screenshot_7.png" /></p>
+<h2 id="_5">Вывод</h2>
+<p>Создан минимальный HTTP-сервер на TCP сокетах, который корректно отдаёт HTML-страницу по запросу клиента. Это демонстрирует базовые принципы работы веб-серверов и взаимодействия по протоколу HTTP.</p></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../js/base.js"></script>
+        <script src="../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
