@@ -8,7 +8,7 @@
         
         
         <link rel="shortcut icon" href="../img/favicon.ico">
-        <title>Заданне 2 - WEB</title>
+        <title>ЛР3 - WEB</title>
         <link href="../css/bootstrap.min.css" rel="stylesheet">
         <link href="../css/fontawesome.min.css" rel="stylesheet">
         <link href="../css/brands.min.css" rel="stylesheet">
@@ -38,7 +38,7 @@
                                 <a href=".." class="nav-link">Home</a>
                             </li>
                             <li class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle active" aria-current="page" role="button" data-bs-toggle="dropdown"  aria-expanded="false">ЛР1</a>
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">ЛР1</a>
                                 <ul class="dropdown-menu">
                                     
 <li>
@@ -50,7 +50,7 @@
 </li>
                                     
 <li>
-    <a href="./" class="dropdown-item active" aria-current="page">Заданне 2</a>
+    <a href="../task2/" class="dropdown-item">Заданне 2</a>
 </li>
                                     
 <li>
@@ -70,7 +70,7 @@
                                 <a href="../lab2/" class="nav-link">ЛР2</a>
                             </li>
                             <li class="nav-item">
-                                <a href="../lab3/" class="nav-link">ЛР3</a>
+                                <a href="./" class="nav-link active" aria-current="page">ЛР3</a>
                             </li>
                             <li class="nav-item">
                                 <a href="../lab4/" class="nav-link">ЛР4</a>
@@ -84,12 +84,12 @@
                             </a>
                         </li>
                             <li class="nav-item">
-                                <a rel="prev" href="../task1/" class="nav-link">
+                                <a rel="prev" href="../lab2/" class="nav-link">
                                     <i class="fa fa-arrow-left"></i> Previous
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a rel="next" href="../task3/" class="nav-link">
+                                <a rel="next" href="../lab4/" class="nav-link">
                                     Next <i class="fa fa-arrow-right"></i>
                                 </a>
                             </li>
@@ -111,26 +111,13 @@
     <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
         <ul class="nav flex-column">
             
-            <li class="nav-item" data-bs-level="1"><a href="#no1" class="nav-link">Лабораторная работа №1</a>
+            <li class="nav-item" data-bs-level="1"><a href="#django-djangorestframework" class="nav-link">РЕАЛИЗАЦИЯ СЕРВЕРНОЙ ЧАСТИ ПРИЛОЖЕНИЯ СРЕДСТВАМИ DJANGO И DJANGORESTFRAMEWORK</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#_1" class="nav-link">Задание:</a>
               <ul class="nav flex-column">
               </ul>
             </li>
-            
-            <li class="nav-item" data-bs-level="1"><a href="#2" class="nav-link">Задание 2</a>
-              <ul class="nav flex-column">
-            <li class="nav-item" data-bs-level="2"><a href="#_1" class="nav-link">Цель</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-bs-level="2"><a href="#_2" class="nav-link">Выполнение</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-bs-level="2"><a href="#_5" class="nav-link">Результат</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-bs-level="2"><a href="#_6" class="nav-link">Вывод</a>
+            <li class="nav-item" data-bs-level="2"><a href="#_2" class="nav-link">Ход выполнения</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -141,104 +128,78 @@
 </div></div>
                     <div class="col-md-9" role="main">
 
-<h1 id="no1"><a href="../lab1/">Лабораторная работа №1</a></h1>
-<h1 id="2"><strong>Задание 2</strong></h1>
-<h2 id="_1">Цель</h2>
-<p>Реализовать клиентскую и серверную часть приложения. Клиент запрашивает выполнение математической операции, параметры которой вводятся с клавиатуры. Сервер обрабатывает данные и возвращает результат клиенту.</p>
-<p><strong>Требования</strong></p>
+<h1 id="django-djangorestframework">РЕАЛИЗАЦИЯ СЕРВЕРНОЙ ЧАСТИ ПРИЛОЖЕНИЯ СРЕДСТВАМИ DJANGO И DJANGORESTFRAMEWORK</h1>
+<h2 id="_1">Задание:</h2>
+<p>Реализовать сайт, используя фреймворк Django 3, Django REST Framework, Djoser и СУБД PostgreSQL *, в соответствии с вариантом задания лабораторной работы.</p>
+<ol>
+<li>Реализовать модель базы данных средствами DjangoORM.</li>
+<li>Реализовать логику работу API средствами Django REST Framework (используя
+методы сериализации).</li>
+<li>Подключить регистрацию / авторизацию по токенам / вывод информации о текущем
+пользователе средствами Djoser.</li>
+</ol>
+<h2 id="_2">Ход выполнения</h2>
+<h3 id="_3">Модели данных</h3>
+<p>Для выполнения данной лабораторной работы я использовал вариант 9(программная система, предназначенная для диспетчера автобусного парка)</p>
 <ul>
-<li>Решение квадратного уравнения.</li>
+<li>BusType — хранит информацию об название типа (городской, междугородний и т. п.), вместимость.</li>
+<li>Bus — содержит государственный регистрационный номер, принадлежность к типу <strong>BusType</strong>.</li>
+<li>Route — хранит номер маршрута, начальная и конечная точки, время начала/окончания движения, интервал движения, протяжённость (в минутах).</li>
+<li>Driver — информация о водителе: ФИО, паспортные данные, водительский класс, стаж и базовый оклад + надбавки.</li>
+<li>WorkShift — дату смены, водителя, автобус, маршрут, время начала/окончания работы, статус и причину (если не вышел).</li>
 </ul>
-<h2 id="_2">Выполнение</h2>
-<p>В ходе выполнения были реализованы клиент и сервер, где:</p>
+<p><img alt="" src="../assets/Scr1_3.png" />
+<img alt="" src="../assets/Scr2_3.png" />
+<img alt="" src="../assets/Scr3_3.png" />
+<img alt="" src="../assets/Scr4_3.png" />
+<img alt="" src="../assets/Scr5_3.png" /></p>
+<h3 id="api-drf">Реализация API через DRF</h3>
+<p>Для каждой модели создан ModelViewSet.</p>
+<p>На примере класса водитель:</p>
+<pre><code>class DriverViewSet(ModelViewSet):
+    queryset = Driver.objects.all()
+    serializer_class = DriverSerializer
+</code></pre>
+<p>Сериализатор:</p>
+<pre><code>class DriverSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Driver
+        fields = '__all__'
+        read_only_fields = ['salary']
+</code></pre>
+<p>Маршрутизация через DefaultRouter:</p>
+<pre><code>router.register('drivers', DriverViewSet)
+router.register('buses', BusViewSet)
+router.register('bus-types', BusTypeViewSet)
+router.register('routes', RouteViewSet)
+router.register('shifts', WorkShiftViewSet)
+</code></pre>
+<p>API:</p>
+<pre><code>/api/drivers/
+/api/buses/
+/api/routes/
+/api/shifts/
+</code></pre>
+<h3 id="djoser">Авторизация и регистрация (Djoser)</h3>
+<p>Авторизация реализована по токенам:</p>
+<p>Регистрация:</p>
+<pre><code>POST /auth/users/
+</code></pre>
+<p>Получение токена:</p>
+<pre><code>POST /auth/token/login/
+</code></pre>
+<p><img alt="" src="../assets/Scr7_3.png" /></p>
+<h3 id="_4">Панель администратора</h3>
+<p>Django Admin позволяет:</p>
 <ul>
-<li><strong>Клиент</strong> подключается к серверу, вводит 3 числа и отправляет их.  </li>
-<li><strong>Сервер</strong> принимает числа, вычисляет решение квадратного уравнения вида ax^2 + bx + c = 0 через формулу дискриминанта и возвращает результат клиенту.  </li>
-<li>На сервере обработан случай, если уравнение имеет 1 корень или же не имеет действительных корней. </li>
+<li>добавлять автобусы, водителей, маршруты</li>
+<li>редактировать смены</li>
+<li>смотреть данные в удобных таблицах</li>
 </ul>
-<h3 id="_3"><strong>Клиент</strong></h3>
-<pre><code class="language-python">import socket  # Импортируем модуль для работы с сетевыми сокетами
-
-sock_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  
-# Создаём TCP-сокет (SOCK_STREAM) для IPv4 (AF_INET)
-
-sock_client.connect(('localhost', 8080))  
-# Подключаемся к серверу на localhost и порту 8080
-
-msg = input(&quot;Enter 3 numbers (abc) separated by a space to solve the quadratic equation ax^2 + bx + c = 0\n&quot;)  
-# Просим пользователя ввести 3 числа a, b и c для решения квадратного уравнения
-
-sock_client.sendall(msg.encode())  
-# Отправляем сообщение серверу, кодируя строку в байты
-
-response = sock_client.recv(1024)  
-# Получаем ответ от сервера (максимум 1024 байта)
-
-print(f'Server: {response.decode()}')  
-# Декодируем байты обратно в строку и выводим ответ сервера
-
-sock_client.close()  
-# Закрываем соединение с сервером
-</code></pre>
-<h3 id="_4"><strong>Сервер</strong></h3>
-<pre><code class="language-python">import socket  # Импортируем модуль для работы с сетевыми сокетами
-
-def solve_sqr(a, b, c):  
-    # Функция для решения квадратного уравнения ax^2 + bx + c = 0
-    discr = b**2 - 4*a*c  
-    # Вычисляем дискриминант
-    if discr &gt; 0:  
-        # Если дискриминант положительный — два различных корня
-        return f&quot;Answer: x1 = {(-b + discr**0.5)/(2*a)}, x2 = {(-b - discr**0.5)/(2*a)}&quot; 
-    elif discr == 0:  
-        # Если дискриминант равен нулю — один корень
-        return f&quot;Answer: x = {-b / (2 * a)}&quot;
-    else:  
-        # Если дискриминант отрицательный — вещественных корней нет
-        return &quot;Discriminant &lt; 0&quot;
-
-sock_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  
-# Создаём TCP-сокет для IPv4
-
-sock_server.bind(('localhost', 8080))  
-# Привязываем сокет к localhost и порту 8080
-
-sock_server.listen(1)  
-# Начинаем слушать входящие соединения, максимум 1 в очереди
-print(&quot;Server on...&quot;)  
-
-while True:  
-    # Бесконечный цикл для приёма клиентов
-    client_connect, client_address = sock_server.accept()  
-    # Принимаем соединение от клиента, получаем объект сокета и адрес клиента
-    print(f'Connection from {client_address}')  
-
-    request = list(map(int, client_connect.recv(1024).decode().split()))  
-    # Получаем данные от клиента (максимум 1024 байта), декодируем и превращаем в список чисел
-
-    print(f'Data from the client: a:{request[0]} b:{request[1]} c:{request[2]}')  
-    # Выводим полученные числа
-
-    response = solve_sqr(request[0], request[1], request[2])  
-    # Решаем квадратное уравнение
-
-    client_connect.sendall(response.encode())  
-    # Отправляем ответ клиенту
-
-    client_connect.close()  
-    # Закрываем соединение с клиентом
-    print(&quot;Server off...&quot;)  
-    # Сообщение о завершении работы с текущим клиентом
-</code></pre>
-<h2 id="_5">Результат</h2>
-<p>Результат работы со стороны сервера:</p>
-<p><img alt="" src="../assets/Screenshot_6.png" /></p>
-<p>Результаты работы после запуска 3-ех различных ситуаций со стороны клиента:</p>
-<p><img alt="" src="../assets/Screenshot_3.png" />
-<img alt="" src="../assets/Screenshot_4.png" />
-<img alt="" src="../assets/Screenshot_5.png" /></p>
-<h2 id="_6">Вывод</h2>
-<p>Реализовал клиент-серверную архитектуру с использованием TCP-сокетов для решения квадратного уравнения.</p></div>
+<p><img alt="" src="../assets/Scr6_3.png" /></p>
+<h3 id="_5">Вывод</h3>
+<p>В ходе лабораторной работы была конструктивно разработана серверная часть системы для диспетчера автобусного парка на базе Django, DRF и Djoser. Реализованы все ключевые элементы: модели данных, REST API, сериализация, токенная авторизация и административное управление через Django Admin.</p>
+<p>Проект продемонстрировал уверенное владение Django ORM, маршрутизацией, инструментами Django REST Framework, а также умение организовывать логику приложения и структурировать данные в соответствии с предметной областью.</p></div>
             </div>
         </div>
 
